@@ -1,4 +1,5 @@
 # SeatReservation
+This project was created as group project for Java Academy organized by GlobalLogic and was built by me and five other participants with the help of our Java Academy mentor Patryk Piechaczek.
 
 This application was generated using JHipster 7.9.2, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v7.9.2](https://www.jhipster.tech/documentation-archive/v7.9.2).
 
