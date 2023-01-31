@@ -1,0 +1,135 @@
+application {
+  config {
+    baseName SeatReservation,
+    applicationType monolith,
+    packageName com.globallogic.seatreservation,
+    authenticationType session,
+    prodDatabaseType postgresql,
+    devDatabaseType	h2Disk,
+    dtoSuffix	Dto
+    clientFramework angular,
+    languages [en, pl],
+    nativeLanguage en,
+    jhiPrefix app
+  }
+  entities *
+}
+
+enum AvailabilityStatus {
+    FREE, OCCUPIED, UNAVAILABLE, RESTRICTED
+}
+
+enum EquipmentType {
+    MONITOR,
+    MOUSE,
+    KEYBOARD,
+    HEADPHONES,
+    DOCKING_STATION,
+    CAMERA,
+    NOTEBOOK
+}
+enum RoomType{
+	CONFERENCE,
+	SHARED
+}
+
+enum ReservationStatus{
+	ACTIVE,
+    CANCELLED
+}
+
+entity Location {
+	name String required
+}
+
+entity Restrictions {
+    name String required,
+    fromDate ZonedDateTime required,
+    toDate ZonedDateTime,
+    availabilityPercentage Double,
+    availabilityPerNumberOfSeats Integer
+}
+
+entity Building {
+	name String required
+}
+
+entity Floor {
+	name String required, 
+    number Integer required,
+    map ImageBlob
+}
+
+entity Room {
+	name String required,
+    map ImageBlob,
+  	status AvailabilityStatus required,
+    roomType RoomType required
+}
+
+entity Seat {
+	seatNumber Integer required,
+	name String required,
+    status AvailabilityStatus required
+}
+
+entity Coordinates {
+fromTop Double required,
+fromLeft Double required
+}
+
+entity Dimensions {
+height Double required,
+width Double required,
+angle Double required
+}
+
+entity Equipment {
+	name String required,
+    type EquipmentType required,
+    description String
+}
+
+
+entity SeatReserved {
+	name String required,
+    fromDate ZonedDateTime required,
+    toDate ZonedDateTime,
+    createdDate ZonedDateTime required
+    reservationStatus ReservationStatus required
+}
+
+entity Address {
+	country String required
+	street String required,
+	postalCode String required,
+	city String required,
+	stateProvince String required
+}
+
+relationship OneToOne {
+	Building{address} to Address{building},
+    Seat{coordinates} to Coordinates{seat},
+    Seat{dimensions} to Dimensions{seat},
+    Room{coordinates} to Coordinates{room},
+    Room{dimensions} to Dimensions{room},
+    Floor{dimensions} to Dimensions{floor},
+    Seat{seatReserved} to SeatReserved{seat},
+    SeatReserved{user} to User
+}
+
+relationship OneToMany {
+	Location{buildings} to Building,
+    Building{floors} to Floor,
+    Floor{rooms} to Room,
+    Room{seats} to Seat,
+    Seat{equipments} to Equipment,
+}
+
+relationship ManyToMany {
+	Location{locationAdmins} to User
+}
+
+dto * with mapstruct
+service * with serviceClass
+paginate * with pagination
